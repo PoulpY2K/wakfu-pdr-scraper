@@ -1,0 +1,44 @@
+# Infos
+info.app:
+  environment: default
+  artifactId: "@project.artifactId@"
+  artifactVersion: "@project.version@"
+  description: "@project.description@"
+  locale: Europe/Paris
+
+# Spring
+spring:
+  application:
+    name: wakfu-pdr-scraper
+  main:
+    banner-mode: console
+  threads.virtual.enabled: true
+  devtools:
+    add-properties: true
+    # Prod
+    # add-properties: false
+
+# Actuator
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info,metrics,caches
+  server:
+    port: 8081
+  health:
+    livenessstate.enabled: true
+    readinessstate.enabled: true
+  info:
+    env.enabled: true
+    java.enabled: true
+  endpoint.health:
+    probes.enabled: true
+    show-details: always
+    status:
+      http-mapping:
+        down: 500
+        warning: 500
+        out-of-service: 503
+      order: down,out-of-service,warning,unknown,up
