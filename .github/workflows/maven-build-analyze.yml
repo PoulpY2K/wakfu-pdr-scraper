@@ -48,8 +48,8 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7
         with:
-          name: wakfupdrscraper-jar
-          path: target/wakfupdrscraper-*.jar
+          name: wakfu-pdr-scraper-jar
+          path: target/wakfu-pdr-scraper-*.jar
           retention-days: 1
 
   dependency-submission:

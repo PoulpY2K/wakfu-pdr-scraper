@@ -27,7 +27,7 @@ RUN apt-get update \
 
 WORKDIR /app
 
-COPY --chmod=555 wakfupdrscraper-*.jar wakfupdrscraper.jar
+COPY --chmod=555 wakfu-pdr-scraper-*.jar wakfu-pdr-scraper.jar
 
 USER wakfu:wakfu
 
@@ -38,4 +38,4 @@ ENV JAVA_OPTS="-Xmx2G -XX:+UseZGC"
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl --fail --silent http://localhost:8081/actuator/health/liveness || exit 1
 
-ENTRYPOINT ["sh", "-c", "exec java ${JAVA_OPTS} -jar wakfupdrscraper.jar"]
+ENTRYPOINT ["sh", "-c", "exec java ${JAVA_OPTS} -jar wakfu-pdr-scraper.jar"]

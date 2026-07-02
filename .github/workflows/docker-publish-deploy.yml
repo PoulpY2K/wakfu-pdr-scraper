@@ -35,7 +35,7 @@ jobs:
       - name: Download JAR artifact
         uses: actions/download-artifact@v8
         with:
-          name: blackflash-jar
+          name: wakfu-pdr-scraper-jar
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
