@@ -1,0 +1,32 @@
+# Infos
+info.app:
+  environment: test
+  artifactId: "@project.artifactId@"
+  artifactVersion: "@project.version@"
+  description: "@project.description@"
+  locale: Europe/Paris
+
+discord:
+  name: "Potion de Rappel"
+  profile-picture-url: "https://cdn.discordapp.com/attachments/427855068360998913/776773812401340426/DiscordIcon_PdRAnimated_alphagood.png"
+  webhook:
+    global:
+      id: "id"
+      token: "token"
+    board:
+      id: "id"
+      token: "token"
+    rumors:
+      id: "id"
+      token: "token"
+
+wakfu:
+  forum:
+    url: "https://www.wakfu.com/fr/forum"
+    rp: "/583-histoire-jeu-role"
+
+playwright:
+  headless: true
+  user-agents: >
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/",
+    "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36"
