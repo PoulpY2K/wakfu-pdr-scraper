@@ -45,6 +45,7 @@
         <!-- Sonar -->
         <sonar.language>java</sonar.language>
         <sonar.sources>pom.xml,src/main</sonar.sources>
+        <sonar.exclusions>src/main/resources/**</sonar.exclusions>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.organization>poulp2k</sonar.organization>
         <sonar.projectKey>poulpy2k_wakfupdrscraper</sonar.projectKey>
