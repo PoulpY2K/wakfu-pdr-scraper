@@ -51,12 +51,15 @@
 
         <!-- Plugins -->
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
 
         <!-- Dependencies -->
+        <mapstruct.version>1.6.3</mapstruct.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <playwright.version>1.60.0</playwright.version>
         <jsoup.version>1.22.2</jsoup.version>
+        <openapi-generator-maven-plugin.version>7.23.0</openapi-generator-maven-plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -85,6 +88,26 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
         <dependency>
@@ -100,6 +123,11 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -167,7 +195,20 @@
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-configuration-processor</artifactId>
                         </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>${lombok-mapstruct-binding.version}</version>
+                        </path>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-Amapstruct.defaultComponentModel=spring</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 
@@ -205,6 +246,58 @@
                         -Dfile.encoding=${project.build.sourceEncoding}
                     </argLine>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi-generator-maven-plugin.version}</version>
+                <configuration>
+                    <output>${project.build.directory}/generated-sources</output>
+                    <apiNameSuffix>Api</apiNameSuffix>
+                    <modelNameSuffix>Dto</modelNameSuffix>
+
+                    <configOptions>
+                        <sourceFolder>plugins</sourceFolder>
+                        <interfaceOnly>true</interfaceOnly>
+                        <serializableModel>true</serializableModel>
+
+                        <openApiNullable>false</openApiNullable>
+                        <skipDefaultInterface>true</skipDefaultInterface>
+                        <useOptional>true</useOptional>
+                        <useTags>true</useTags>
+
+                        <useSpringBoot4>true</useSpringBoot4>
+                        <useJakartaEe>true</useJakartaEe>
+                        <useJackson3>true</useJackson3>
+
+                        <generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
+                        <additionalModelTypeAnnotations>
+                            @lombok.Builder(toBuilder = true)
+                            @lombok.extern.jackson.Jacksonized
+                        </additionalModelTypeAnnotations>
+                    </configOptions>
+                </configuration>
+                <executions>
+                    <!-- Discord-v10 -->
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/generated/client-api-spec/discord/Discord-v10.json</inputSpec>
+                            <modelPackage>${java.code.base-package}.dtos.discord</modelPackage>
+                            <generatorName>java</generatorName>
+                            <library>restclient</library>
+                            <generateApis>false</generateApis>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <configOptions>
+                                <useBeanValidation>false</useBeanValidation>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
