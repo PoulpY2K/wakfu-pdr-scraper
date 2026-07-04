@@ -17,31 +17,13 @@ spring:
     add-properties: true
     # Prod
     # add-properties: false
-
-discord:
-  name: "Potion de Rappel"
-  profile-picture-url: "https://cdn.discordapp.com/attachments/427855068360998913/776773812401340426/DiscordIcon_PdRAnimated_alphagood.png"
-  webhook:
-    global:
-      id: ${WEBHOOK_GLOBAL_ID}
-      token: ${WEBHOOK_GLOBAL_TOKEN}
-    board:
-      id: ${WEBHOOK_NOTICE_BOARD_ID}
-      token: ${WEBHOOK_NOTICE_BOARD_TOKEN}
-    rumors:
-      id: ${WEBHOOK_RUMORS_ID}
-      token: ${WEBHOOK_RUMORS_TOKEN}
-
-wakfu:
-  forum:
-    url: "https://www.wakfu.com/fr/forum"
-    rp: "/583-histoire-jeu-role"
-
-playwright:
-  headless: true
-  user-agents: >
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/",
-    "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36"
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
 
 # Actuator
 management:

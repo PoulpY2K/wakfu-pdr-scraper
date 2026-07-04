@@ -1,4 +1,4 @@
-package fr.fumbus.wakfupdrscraper.configurations;
+package fr.fumbus.wakfupdrscraper.properties;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.Set;
 @Data
 @Configuration
 @RequiredArgsConstructor
-public class PlaywrightConfiguration {
+public class PlaywrightProperties {
 
     @Value("${playwright.user-agents}")
     private Set<String> userAgents;

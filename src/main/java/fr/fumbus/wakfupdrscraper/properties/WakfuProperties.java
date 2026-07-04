@@ -1,4 +1,4 @@
-package fr.fumbus.wakfupdrscraper.configurations;
+package fr.fumbus.wakfupdrscraper.properties;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +14,17 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @RequiredArgsConstructor
-public class WakfuConfiguration {
+public class WakfuProperties {
 
     @Value("${wakfu.forum.url}")
     private String forumUrl;
 
-    @Value("${wakfu.forum.rp}")
+    @Value("${wakfu.forum.rp.path}")
     private String forumRoleplayPath;
+
+    @Value("${wakfu.forum.rumors.path}")
+    private String forumRoleplayRumorsPath;
+
+    @Value("${wakfu.forum.board.path}")
+    private String forumRoleplayBoardPath;
 }

@@ -1,0 +1,22 @@
+---
+spring.config.activate.on-profile: dev
+
+datasources:
+  pdr:
+    jdbcUrl: "jdbc:postgresql://localhost:5432/postgres"
+    schema: "pdr"
+    driverClassName: org.postgresql.Driver
+    username: "postgres"
+    password: "wakfuscrap"
+    ssl: true
+    cachePrepStmts: true
+    rewriteBatchedStatements: true
+    useServerPrepStmts: true
+    testWhileIdle: true
+    testOnBorrow: true
+    borrowConnectionTimeout: true
+    maximumPoolSize: 10
+    maxIdleTime: 360
+    maintenanceInterval: 180
+    metricEnabled: true
+    jmxEnabled: true

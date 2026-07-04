@@ -1,0 +1,8 @@
+---
+# Informations
+info.app.environment: dev
+spring.config.import:
+  - "optional:./libs/datasources.yaml"
+  - "optional:./libs/discord.yaml"
+  - "optional:./libs/wakfu.yaml"
+  - "optional:./libs/playwright.yaml"

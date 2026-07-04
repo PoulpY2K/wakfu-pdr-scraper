@@ -23,7 +23,9 @@ discord:
 wakfu:
   forum:
     url: "https://www.wakfu.com/fr/forum"
-    rp: "/583-histoire-jeu-role"
+    rp.path: "/583-histoire-jeu-role"
+    rumors.path: "/584-general/395506-rp-rumeurs"
+    board.path: "/584-general/348768-annonces-rp-tableau-affichage"
 
 playwright:
   headless: true

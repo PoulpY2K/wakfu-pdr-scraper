@@ -1,4 +1,4 @@
-package fr.fumbus.wakfupdrscraper.configurations;
+package fr.fumbus.wakfupdrscraper.properties;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @RequiredArgsConstructor
-public class DiscordConfiguration {
+public class DiscordProperties {
 
     @Value("${discord.name}")
     private String name;
