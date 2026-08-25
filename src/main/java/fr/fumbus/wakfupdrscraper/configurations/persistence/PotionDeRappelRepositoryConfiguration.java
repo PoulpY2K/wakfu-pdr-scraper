@@ -1,10 +1,11 @@
 package fr.fumbus.wakfupdrscraper.configurations.persistence;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -31,8 +32,13 @@ public class PotionDeRappelRepositoryConfiguration extends AbstractRepositoryCon
 
     @Bean
     @ConfigurationProperties(prefix = PDR_DATA_SOURCE_PREFIX)
-    public DataSource pdrDataSource() {
-        return DataSourceBuilder.create().build();
+    public HikariConfig pdrHikariConfig() {
+        return new HikariConfig();
+    }
+
+    @Bean
+    public DataSource pdrDataSource(@Qualifier(PDR_HIKARI_CONFIG) HikariConfig pdrHikariConfig) {
+        return new HikariDataSource(pdrHikariConfig);
     }
 
     @Bean

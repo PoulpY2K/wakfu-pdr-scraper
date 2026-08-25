@@ -1,6 +1,6 @@
 package fr.fumbus.wakfupdrscraper.playwright;
 
-import fr.fumbus.wakfupdrscraper.properties.PlaywrightProperties;
+import fr.fumbus.wakfupdrscraper.models.properties.PlaywrightProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;

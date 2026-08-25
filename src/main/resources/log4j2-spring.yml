@@ -1,0 +1,36 @@
+---
+Configuration:
+  status: INFO
+  monitorInterval: 5
+
+  Properties:
+    Property:
+      - name: activity_branch
+        value: ${spring:info.app.environment}
+      - name: artifact_name
+        value: ${spring:info.app.artifactId}
+      - name: artifact_version
+        value: ${spring:info.app.artifactVersion}
+      - name: locale
+        value: ${spring:info.app.locale}
+
+  Appenders:
+    Console:
+      name: ConsoleApp
+      target: SYSTEM_OUT
+      PatternLayout:
+        disableAnsi: false
+        pattern: "%style{%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ}{${locale}}}{bold,bright_black} %style{${activity_branch}}{magenta,dim} %style{${artifact_version}}{bright_blue} %style{[%-15thread]}{bright_yellow} %highlight{%-5level} --- %highlight{%-40logger{1.}} : %m%n"
+
+  Loggers:
+    logger:
+      - name: fr.fumbus.wakfupdrscraper
+        level: ${spring:fumbus.logger.level.main}
+        additivity: false
+        AppenderRef:
+          - ref: ConsoleApp
+
+    Root:
+      level: ERROR
+      AppenderRef:
+        ref: ConsoleApp
