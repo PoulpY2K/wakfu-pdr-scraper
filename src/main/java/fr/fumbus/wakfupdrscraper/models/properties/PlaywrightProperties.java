@@ -1,8 +1,7 @@
-package fr.fumbus.wakfupdrscraper.properties;
+package fr.fumbus.wakfupdrscraper.models.properties;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Set;
@@ -14,12 +13,8 @@ import java.util.Set;
 
 @Data
 @Configuration
-@RequiredArgsConstructor
+@ConfigurationProperties(prefix = "playwright")
 public class PlaywrightProperties {
-
-    @Value("${playwright.user-agents}")
     private Set<String> userAgents;
-
-    @Value("${playwright.headless}")
     private Boolean headless;
 }

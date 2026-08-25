@@ -31,6 +31,4 @@ Thumbs.db
 .DS_Store
 
 # Environment / secrets
-.env
-*.env
-
+config-local/libs/.env

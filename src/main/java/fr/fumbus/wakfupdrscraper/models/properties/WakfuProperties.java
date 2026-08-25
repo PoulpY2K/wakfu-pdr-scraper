@@ -1,4 +1,4 @@
-package fr.fumbus.wakfupdrscraper.properties;
+package fr.fumbus.wakfupdrscraper.models.properties;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
