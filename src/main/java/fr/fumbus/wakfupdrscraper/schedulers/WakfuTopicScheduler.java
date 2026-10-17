@@ -22,7 +22,7 @@ public class WakfuTopicScheduler {
     /**
      * Scrapes the Roleplay (RP) section of the Wakfu forum.
      */
-    @Scheduled(fixedRateString = "${wakfu.scheduler.rp.fixed-delay:60000}")
+    @Scheduled(fixedDelayString = "${wakfu.scheduler.rp.fixed-delay:60000}")
     public void scrapeRoleplay() {
         log.info("Starting Roleplay scrape…");
         String uri = wakfuProperties.getForumUrl() + wakfuProperties.getForumRoleplayPath();
@@ -33,7 +33,7 @@ public class WakfuTopicScheduler {
     /**
      * Scrapes the Rumors section of the Wakfu forum.
      */
-    @Scheduled(fixedRateString = "${wakfu.scheduler.rumors.fixed-delay:60000}")
+    @Scheduled(fixedDelayString = "${wakfu.scheduler.rumors.fixed-delay:60000}")
     public void scrapeRumors() {
         log.info("Starting Rumors scrape…");
         String uri = wakfuProperties.getForumUrl() + wakfuProperties.getForumRoleplayRumorsPath();
@@ -44,7 +44,7 @@ public class WakfuTopicScheduler {
     /**
      * Scrapes the Board section of the Wakfu forum.
      */
-    @Scheduled(fixedRateString = "${wakfu.scheduler.board.fixed-delay:60000}")
+    @Scheduled(fixedDelayString = "${wakfu.scheduler.board.fixed-delay:60000}")
     public void scrapeBoard() {
         log.info("Starting Board scrape…");
         String uri = wakfuProperties.getForumUrl() + wakfuProperties.getForumRoleplayBoardPath();
