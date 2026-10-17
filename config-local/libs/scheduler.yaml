@@ -1,0 +1,6 @@
+---
+spring.config.activate.on-profile: dev
+
+scheduler:
+  enabled: true # Is the scheduler enabled ?
+  rate: 60 # Scheduler rate in minutes

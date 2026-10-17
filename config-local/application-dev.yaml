@@ -2,9 +2,9 @@
 # Informations
 info.app.environment: dev
 spring.config.import:
-  - "./libs/datasources.yaml"
   - "./libs/discord.yaml"
   - "./libs/wakfu.yaml"
+  - "./libs/scheduler.yaml"
   - "./libs/playwright.yaml"
   - "optional:./libs/.env[.properties]"
 

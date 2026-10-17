@@ -1,11 +1,17 @@
 package fr.fumbus.wakfupdrscraper.schedulers;
 
-import fr.fumbus.wakfupdrscraper.playwright.PlaywrightManager;
+import fr.fumbus.wakfupdrscraper.models.Topic;
 import fr.fumbus.wakfupdrscraper.models.properties.WakfuProperties;
+import fr.fumbus.wakfupdrscraper.parsers.CategoryParser;
+import fr.fumbus.wakfupdrscraper.playwright.PlaywrightManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Jérémy Laurent <poulpy2k>
@@ -14,7 +20,11 @@ import org.springframework.stereotype.Component;
 @Log4j2
 @Component
 @RequiredArgsConstructor
+@ConditionalOnBooleanProperty(name = "scheduler.enabled")
 public class WakfuTopicScheduler {
+
+    private static final long ID_TOPIC_RUMORS = 395506;
+    private static final long ID_TOPIC_BOARDS = 348768;
 
     private final PlaywrightManager playwrightManager;
     private final WakfuProperties wakfuProperties;
@@ -22,33 +32,28 @@ public class WakfuTopicScheduler {
     /**
      * Scrapes the Roleplay (RP) section of the Wakfu forum.
      */
-    @Scheduled(fixedDelayString = "${wakfu.scheduler.rp.fixed-delay:60000}")
-    public void scrapeRoleplay() {
-        log.info("Starting Roleplay scrape…");
+    @Scheduled(fixedRateString = "${scheduler.rate:60}", timeUnit = TimeUnit.MINUTES)
+    public void scrapeRoleplayForum() {
+        log.info("Starting Wakfu Roleplay scrape…");
         String uri = wakfuProperties.getForumUrl() + wakfuProperties.getForumRoleplayPath();
         log.info("Target URI: {}", uri);
-        // TODO: parse content with jsoup and persist topics
+        String html = playwrightManager.fetchHtml(uri);
+        List<Topic> topics = CategoryParser.parse(html);
+
+        // Do all that in parallel threads
+        Topic rumors = findTopicById(topics, ID_TOPIC_RUMORS); // Could be a useCase, find topic then -> are replies > past -> do the communication pipeline
+        Topic boards = findTopicById(topics, ID_TOPIC_BOARDS); // Could be a useCase, find topic then -> are replies > past -> do the communication pipeline
+        long newestTopicId = topics.stream()
+                .filter(topic -> !topic.pinned())
+                .mapToLong(Topic::id)
+                .max()
+                .orElseThrow();
     }
 
-    /**
-     * Scrapes the Rumors section of the Wakfu forum.
-     */
-    @Scheduled(fixedDelayString = "${wakfu.scheduler.rumors.fixed-delay:60000}")
-    public void scrapeRumors() {
-        log.info("Starting Rumors scrape…");
-        String uri = wakfuProperties.getForumUrl() + wakfuProperties.getForumRoleplayRumorsPath();
-        log.info("Target URI: {}", uri);
-        // TODO: parse content with jsoup and persist topics
-    }
-
-    /**
-     * Scrapes the Board section of the Wakfu forum.
-     */
-    @Scheduled(fixedDelayString = "${wakfu.scheduler.board.fixed-delay:60000}")
-    public void scrapeBoard() {
-        log.info("Starting Board scrape…");
-        String uri = wakfuProperties.getForumUrl() + wakfuProperties.getForumRoleplayBoardPath();
-        log.info("Target URI: {}", uri);
-        // TODO: parse content with jsoup and persist topics
+    private Topic findTopicById(List<Topic> topics, long id) {
+        return topics.stream()
+                .filter(topic -> topic.id() == id)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Topic with id " + id + " not found"));
     }
 }
