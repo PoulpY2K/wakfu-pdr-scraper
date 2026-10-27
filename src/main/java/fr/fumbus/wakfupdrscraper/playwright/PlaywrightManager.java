@@ -31,7 +31,8 @@ public class PlaywrightManager {
     private static final List<String> STEALTH_SCRIPTS = List.of(
             "stealth/navigator.webdriver.js",
             "stealth/chrome.runtime.js",
-            "stealth/permissions.js");
+            "stealth/permissions.js"
+    );
 
     private final PlaywrightProperties properties;
 

@@ -1,6 +1,7 @@
 package fr.fumbus.wakfupdrscraper.schedulers;
 
 import fr.fumbus.wakfupdrscraper.models.Topic;
+import fr.fumbus.wakfupdrscraper.models.exceptions.technical.TopicNotFoundException;
 import fr.fumbus.wakfupdrscraper.models.properties.WakfuProperties;
 import fr.fumbus.wakfupdrscraper.parsers.CategoryParser;
 import fr.fumbus.wakfupdrscraper.playwright.PlaywrightManager;
@@ -10,8 +11,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProp
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author Jérémy Laurent <poulpy2k>
@@ -26,6 +30,10 @@ public class WakfuTopicScheduler {
     private static final long ID_TOPIC_RUMORS = 395506;
     private static final long ID_TOPIC_BOARDS = 348768;
 
+    // ONLY FOR TESTING PURPOSES
+    private static final long ID_TOPIC_NEWEST = 434898;
+
+    private final ExecutorService executorService;
     private final PlaywrightManager playwrightManager;
     private final WakfuProperties wakfuProperties;
 
@@ -38,22 +46,40 @@ public class WakfuTopicScheduler {
         String uri = wakfuProperties.getForumUrl() + wakfuProperties.getForumRoleplayPath();
         log.info("Target URI: {}", uri);
         String html = playwrightManager.fetchHtml(uri);
-        List<Topic> topics = CategoryParser.parse(html);
+        Set<Topic> topics = CategoryParser.parse(html);
 
         // Do all that in parallel threads
-        Topic rumors = findTopicById(topics, ID_TOPIC_RUMORS); // Could be a useCase, find topic then -> are replies > past -> do the communication pipeline
-        Topic boards = findTopicById(topics, ID_TOPIC_BOARDS); // Could be a useCase, find topic then -> are replies > past -> do the communication pipeline
-        long newestTopicId = topics.stream()
-                .filter(topic -> !topic.pinned())
-                .mapToLong(Topic::id)
-                .max()
-                .orElseThrow();
+        CompletableFuture.allOf(
+                CompletableFuture.runAsync(() -> processPinnedTopic(topics, ID_TOPIC_RUMORS), executorService),
+                CompletableFuture.runAsync(() -> processPinnedTopic(topics, ID_TOPIC_BOARDS), executorService),
+                CompletableFuture.runAsync(() -> processNewTopics(topics), executorService)
+        ).join();
     }
 
-    private Topic findTopicById(List<Topic> topics, long id) {
+    // Could be a useCase, find topic then -> are replies > past -> do the communication pipeline
+    private void processPinnedTopic(Set<Topic> topics, Long topicId) {
+        Topic topic = findTopicById(topics, topicId);
+        log.info("[pinned] {}", topic);
+    }
+
+    // For each of those that have new content -> if just new and no replies do a new pipeline, if not, reuse the useCase of pinned topics
+    private void processNewTopics(Set<Topic> topics) {
+        Set<Topic> newestTopics = findNewestTopics(topics);
+        for (Topic topic : newestTopics) {
+            log.info("[non-pinned] {}", topic);
+        }
+    }
+
+    private Topic findTopicById(Set<Topic> topics, long id) {
         return topics.stream()
                 .filter(topic -> topic.id() == id)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Topic with id " + id + " not found"));
+                .orElseThrow(() -> new TopicNotFoundException("Topic with id " + id + " not found"));
+    }
+
+    private Set<Topic> findNewestTopics(Set<Topic> topics) {
+        return topics.stream()
+                .filter(topic -> !topic.pinned())
+                .collect(Collectors.toSet());
     }
 }

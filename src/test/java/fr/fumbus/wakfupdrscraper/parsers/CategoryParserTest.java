@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CategoryParserTest {
 
-    private final List<Topic> topics = CategoryParser.parse(categoryFixture());
+    private final Set<Topic> topics = CategoryParser.parse(categoryFixture());
 
     @Test
     void readsEveryTopicRowAndFlagsThePinnedOnes() {

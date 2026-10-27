@@ -6,9 +6,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
@@ -26,10 +27,10 @@ public class CategoryParser {
     private static final int REPLIES_COLUMN = 1;
     private static final Pattern TOPIC_ID = Pattern.compile("/(\\d+)-[^/?#]*$");
 
-    public static List<Topic> parse(String html) {
-        List<Topic> topics = Jsoup.parse(html).select(TOPIC_ROW).stream()
+    public static Set<Topic> parse(String html) {
+        Set<Topic> topics = Jsoup.parse(html).select(TOPIC_ROW).stream()
                 .map(CategoryParser::toTopic)
-                .toList();
+                .collect(Collectors.toSet());
         if (topics.isEmpty()) {
             throw new IllegalStateException("No topic row found, the forum layout changed or a block page was served");
         }
