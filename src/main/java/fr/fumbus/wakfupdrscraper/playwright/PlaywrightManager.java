@@ -14,6 +14,9 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author Jérémy Laurent <poulpy2k>
@@ -37,11 +40,20 @@ public class PlaywrightManager {
     private final PlaywrightProperties properties;
 
     public String fetchHtml(String url) {
+        return withSession(fetcher -> fetcher.fetch(url));
+    }
+
+    /** Runs sequential fetches on the calling thread, retaining cookies between pages. */
+    public <T> T withSession(Function<HtmlFetcher, T> action) {
         try (Playwright playwright = Playwright.create();
              Browser browser = launchBrowser(playwright);
              BrowserContext context = browser.newContext(new Browser.NewContextOptions().setUserAgent(randomUserAgent()))) {
             STEALTH_SCRIPTS.forEach(script -> context.addInitScript(readScript(script)));
-            return loadPage(context.newPage(), url);
+            return action.apply(url -> {
+                try (Page page = context.newPage()) {
+                    return loadPage(page, url);
+                }
+            });
         }
     }
 
@@ -51,17 +63,34 @@ public class PlaywrightManager {
                 .setArgs(CHROMIUM_ARGS));
     }
 
-    private String loadPage(Page page, String url) {
-        Response response = page.navigate(url, new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
-        if (response == null || !response.ok()) {
-            throw new IllegalStateException("Could not load " + url + ", status: " + (response == null ? "none" : response.status()));
+    String loadPage(Page page, String url) {
+        AtomicReference<Response> latestNavigation = new AtomicReference<>();
+        Consumer<Response> listener = response -> {
+            if (response.request().isNavigationRequest() && response.frame() == page.mainFrame()) {
+                latestNavigation.set(response);
+            }
+        };
+        page.onResponse(listener);
+        try {
+            Response initial = page.navigate(url, new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
+            boolean challenged = page.locator("#challenge-container").count() > 0;
+            if (challenged) {
+                waitForWafChallenge(page);
+            }
+            Response response = latestNavigation.get() == null ? initial : latestNavigation.get();
+            if (response == null || !response.ok()) {
+                throw new IllegalStateException("Could not load " + url + ", status: " + (response == null ? "none" : response.status()));
+            }
+            return page.content();
+        } catch (TimeoutError e) {
+            throw new IllegalStateException("Timed out loading forum page " + url, e);
+        } finally {
+            page.offResponse(listener);
         }
-        waitForWafChallenge(page);
-        return page.content();
     }
 
     private void waitForWafChallenge(Page page) {
-        page.waitForFunction("() => !document.getElementById('challenge-container')",
+        page.waitForFunction("() => !document.getElementById('challenge-container') && !!document.querySelector('a.ak-title-topic, .ak-posts-list')",
                 null, new Page.WaitForFunctionOptions().setTimeout(CHALLENGE_TIMEOUT_MS));
         page.waitForLoadState(LoadState.DOMCONTENTLOADED);
     }

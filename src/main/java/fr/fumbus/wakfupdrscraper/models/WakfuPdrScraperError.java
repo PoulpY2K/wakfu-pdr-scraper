@@ -1,7 +1,6 @@
 package fr.fumbus.wakfupdrscraper.models;
 
 import fr.fumbus.wakfupdrscraper.models.errors.ErrorsCode;
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.Comparator;
@@ -13,7 +12,7 @@ import java.util.Objects;
  */
 
 @Data
-@Builder
+@lombok.Builder
 public class WakfuPdrScraperError implements Comparable<WakfuPdrScraperError> {
 
     private ErrorsCode errorCode = ErrorsCode.ERR01;
