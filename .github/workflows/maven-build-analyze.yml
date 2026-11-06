@@ -35,7 +35,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: Build and test with Maven
-        run: mvn clean verify --no-transfer-progress -B
+        run: mvn clean verify -Pintegration-tests --no-transfer-progress -B
 
       - name: Analyze with SonarQube
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
