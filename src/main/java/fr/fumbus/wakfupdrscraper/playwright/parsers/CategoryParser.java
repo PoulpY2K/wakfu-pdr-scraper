@@ -1,4 +1,4 @@
-package fr.fumbus.wakfupdrscraper.parsers;
+package fr.fumbus.wakfupdrscraper.playwright.parsers;
 
 import fr.fumbus.wakfupdrscraper.models.Topic;
 import lombok.experimental.UtilityClass;
@@ -28,8 +28,12 @@ public class CategoryParser {
     private static final Pattern TOPIC_ID = Pattern.compile("/(\\d+)-[^/?#]*$");
 
     public static Set<Topic> parse(String html) {
+        return parse(html, null);
+    }
+
+    public static Set<Topic> parse(String html, URI pageUrl) {
         Set<Topic> topics = Jsoup.parse(html).select(TOPIC_ROW).stream()
-                .map(CategoryParser::toTopic)
+                .map(row -> toTopic(row, pageUrl))
                 .collect(Collectors.toSet());
         if (topics.isEmpty()) {
             throw new IllegalStateException("No topic row found, the forum layout changed or a block page was served");
@@ -37,13 +41,13 @@ public class CategoryParser {
         return topics;
     }
 
-    private static Topic toTopic(Element row) {
+    private static Topic toTopic(Element row, URI pageUrl) {
         Element link = row.selectFirst(TOPIC_LINK);
         if(isNull(link)) {
             throw new IllegalStateException("No topic link found in row: " + row);
         }
-        String href = link.attr("href");
-        return new Topic(getTopicIdentifierFromLink(href), link.text(), URI.create(href), replyCount(row), isPinned(row));
+        URI url = ForumUrls.withoutQuery(ForumUrls.resolve(pageUrl, link.attr("href")));
+        return new Topic(getTopicIdentifierFromLink(url.getPath()), link.text(), url, replyCount(row), isPinned(row));
     }
 
     private static boolean isPinned(Element row) {

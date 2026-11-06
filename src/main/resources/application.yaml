@@ -6,6 +6,11 @@ info.app:
   description: "@project.description@"
   locale: Europe/Paris
 
+# Scraping depth. Category discovery intentionally covers recent pages only.
+scraping:
+  category-page-limit: 3
+  topic-page-limit: 1000 # Fail rather than return partial topic content beyond this limit.
+
 # Spring
 spring:
   application:

@@ -1,6 +1,7 @@
 package fr.fumbus.wakfupdrscraper.parsers;
 
 import fr.fumbus.wakfupdrscraper.models.Topic;
+import fr.fumbus.wakfupdrscraper.playwright.parsers.CategoryParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -52,6 +53,15 @@ class CategoryParserTest {
         assertThat(newest.id()).isEqualTo(435756);
         assertThat(newest.title()).isEqualTo("[RP - Projet & Serveur Discord] WAKMART - Le supermarché participatif");
         assertThat(newest.replyCount()).isZero();
+    }
+
+    @Test
+    void acceptsTopicUrlsWithQueryParametersAndFragments() {
+        String html = "<table><tr><td><a class='ak-title-topic' href='https://www.wakfu.com/fr/forum/584-general/123-title?page=2#entry4'>Topic</a></td><td>1 234</td></tr></table>";
+        assertThat(CategoryParser.parse(html)).singleElement().satisfies(topic -> {
+            assertThat(topic.id()).isEqualTo(123);
+            assertThat(topic.replyCount()).isEqualTo(1234);
+        });
     }
 
     @Test
