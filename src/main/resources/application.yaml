@@ -23,6 +23,14 @@ spring:
     add-properties: true
     # Prod
     # add-properties: false
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.jdbc.time_zone: UTC
+    flyway:
+      locations: classpath:db/migration
 
 # Actuator
 management:
@@ -39,6 +47,7 @@ management:
   info:
     env.enabled: true
     java.enabled: true
+    db.enabled: true
   endpoint.health:
     show-details: always
     show-components: always
@@ -50,3 +59,8 @@ management:
         warning: 500
         out-of-service: 503
       order: down,out-of-service,warning,unknown,up
+    group:
+      healthcheck:
+        include:
+          - db
+        show-components: never
