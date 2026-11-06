@@ -6,6 +6,7 @@ spring.config.import:
   - "./libs/wakfu.yaml"
   - "./libs/scheduler.yaml"
   - "./libs/playwright.yaml"
+  - "./libs/datasources.yml"
   - "optional:./libs/.env[.properties]"
 
 fumbus.logger:

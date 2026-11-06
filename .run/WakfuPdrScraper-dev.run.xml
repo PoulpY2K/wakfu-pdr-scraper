@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="WakfuPdrScraper-dev" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="dev" />
+    <option name="SCHEDULED_DEBUGGER" value="true" />
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <module name="wakfu-pdr-scraper" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="fr.fumbus.wakfupdrscraper.WakfuPdrScraperApplication" />
