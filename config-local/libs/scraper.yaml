@@ -1,0 +1,10 @@
+---
+spring.config.activate.on-profile: dev
+
+scraper:
+  scheduler:
+    enabled: true # Is the scheduler enabled ?
+    rate: 60 # Scheduler rate in minutes
+  limits:
+    category: 3 # Scraping depth. Category discovery intentionally covers recent pages only.
+    topic: 1000 # Fail rather than return partial topic content beyond this limit.

@@ -29,6 +29,15 @@ WORKDIR /app
 
 COPY --chmod=555 wakfu-pdr-scraper-*.jar wakfu-pdr-scraper.jar
 
+# Playwright: install Chromium and its system libraries at build time (as root) into a shared path,
+# so the non-root runtime user never has to download anything.
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+RUN java -Dloader.main=com.microsoft.playwright.CLI -cp wakfu-pdr-scraper.jar \
+        org.springframework.boot.loader.launch.PropertiesLauncher install --with-deps chromium \
+    && chmod -R a+rX /ms-playwright \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/*
+
 USER wakfu:wakfu
 
 EXPOSE 8081

@@ -2,7 +2,13 @@
 # Informations
 info.app.environment: dev
 spring.config.import:
-  - "optional:./libs/datasources.yaml"
-  - "optional:./libs/discord.yaml"
-  - "optional:./libs/wakfu.yaml"
-  - "optional:./libs/playwright.yaml"
+  - "./libs/discord.yaml"
+  - "./libs/wakfu.yaml"
+  - "./libs/scraper.yaml"
+  - "./libs/playwright.yaml"
+  - "optional:./libs/.env[.properties]"
+
+pdr.logger:
+  level:
+    main: TRACE
+    other: TRACE

@@ -1,9 +1,10 @@
-package fr.fumbus.wakfupdrscraper.properties;
+package fr.fumbus.wakfupdrscraper.models.properties;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.annotation.Validated;
 
 
 /**
@@ -12,19 +13,23 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Data
+@Validated
 @Configuration
-@RequiredArgsConstructor
 public class WakfuProperties {
 
     @Value("${wakfu.forum.url}")
+    @NotBlank
     private String forumUrl;
 
     @Value("${wakfu.forum.rp.path}")
+    @NotBlank
     private String forumRoleplayPath;
 
     @Value("${wakfu.forum.rumors.path}")
+    @NotBlank
     private String forumRoleplayRumorsPath;
 
     @Value("${wakfu.forum.board.path}")
+    @NotBlank
     private String forumRoleplayBoardPath;
 }
