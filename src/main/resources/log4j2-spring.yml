@@ -25,7 +25,7 @@ Configuration:
   Loggers:
     logger:
       - name: fr.fumbus.wakfupdrscraper
-        level: ${spring:fumbus.logger.level.main}
+        level: ${spring:pdr.logger.level.main}
         additivity: false
         AppenderRef:
           - ref: ConsoleApp

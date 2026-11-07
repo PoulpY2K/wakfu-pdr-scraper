@@ -33,6 +33,10 @@ playwright:
     - "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
     - "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36"
 
-scheduler:
-  enabled: false # Is the scheduler enabled ?
-  rate: 60 # Scheduler rate in minutes
+scraper:
+  scheduler:
+    enabled: true # Is the scheduler enabled ?
+    rate: 60 # Scheduler rate in minutes
+  limits:
+    category: 3 # Scraping depth. Category discovery intentionally covers recent pages only.
+    topic: 1000 # Fail rather than return partial topic content beyond this limit.

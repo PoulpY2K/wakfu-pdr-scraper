@@ -4,11 +4,11 @@ info.app.environment: dev
 spring.config.import:
   - "./libs/discord.yaml"
   - "./libs/wakfu.yaml"
-  - "./libs/scheduler.yaml"
+  - "./libs/scraper.yaml"
   - "./libs/playwright.yaml"
   - "optional:./libs/.env[.properties]"
 
-fumbus.logger:
+pdr.logger:
   level:
     main: TRACE
     other: TRACE

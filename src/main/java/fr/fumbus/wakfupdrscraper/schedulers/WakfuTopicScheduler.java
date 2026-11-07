@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-@ConditionalOnBooleanProperty(name = "scheduler.enabled")
+@ConditionalOnBooleanProperty(name = "scraper.scheduler.enabled")
 public class WakfuTopicScheduler {
 
     private static final long ID_TOPIC_RUMORS = 395506;
@@ -37,7 +37,7 @@ public class WakfuTopicScheduler {
     /**
      * Scrapes the Roleplay (RP) section of the Wakfu forum.
      */
-    @Scheduled(fixedRateString = "${scheduler.rate:60}", timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedRateString = "${scraper.scheduler.rate:60}", timeUnit = TimeUnit.MINUTES)
     public void scrapeRoleplayForum() {
         log.info("Starting Wakfu Roleplay scrape…");
         String uri = wakfuProperties.getForumUrl() + wakfuProperties.getForumRoleplayPath();
